@@ -48,9 +48,7 @@ const SpotPriceChart: React.FC = () => {
     void fetchData();
   }, []); // Or [] if effect doesn't need props or state
 
-  
-
-  const primaryAxis = React.useMemo(
+  const timeAxis = React.useMemo(
     (): AxisOptions<TSpotPrice> => ({
       getValue: datum => new Date(datum.timestamp),
       tickCount: spotPriceSummary ? spotPriceSummary.prices.length / 6 : 0,
@@ -60,19 +58,21 @@ const SpotPriceChart: React.FC = () => {
     [spotPriceSummary]
   )
   
-  const secondaryAxes = React.useMemo(
+  const priceAxis = React.useMemo(
     (): AxisOptions<TSpotPrice>[] => [
       {
         getValue: datum => Number(datum.price_with_tax),
         position: 'left',
         // invert: true,
         formatters: {
+          scale: (value: number) => Number(value).toFixed(2),
           tooltip: (datum: unknown) => Number(datum).toFixed(2),
         }
       },
     ],
     [spotPriceSummary]
   )
+
   if(error) {
     return <div>Error: {error.message}</div>;
   }
@@ -83,13 +83,12 @@ const SpotPriceChart: React.FC = () => {
     <>
       <div className='spot-price-chart'>
       <div className='spot-price-chart-description'>
-        <LabelMetadata label='From' value={spotPriceSummary.from} />
-        <LabelMetadata label='To' value={spotPriceSummary.to} />
+        <LabelMetadata label='From' value={spotPriceSummary.from.split('T')[0]} />
+        <LabelMetadata label='To' value={spotPriceSummary.to.split('T')[0]} />
         <LabelMetadata label='Price Unit' value={spotPriceSummary.meta.price_unit} />
         <LabelMetadata label='Tax' value={`${spotPriceSummary.meta.tax}%`} />
       </div>
       <Chart 
-
         options={{
           
           dark: true,
@@ -97,8 +96,8 @@ const SpotPriceChart: React.FC = () => {
             label: spotPriceSummary.meta.price_unit,
             data: spotPriceSummary.prices,
           }],
-          primaryAxis,
-          secondaryAxes,
+          primaryAxis: timeAxis,
+          secondaryAxes: priceAxis,
         }}
       />
       </div>
