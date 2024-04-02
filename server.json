@@ -1,0 +1,329 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "base API",
+    "description": "open api specification for base api",
+    "contact": {
+      "email": "test@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:9000/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "spot_price"
+    }
+  ],
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "x-eov-operation-handler": "healthcheck/route.healthcheck",
+        "operationId": "getHealthCheck",
+        "tags": [
+          "public"
+        ],
+        "description": "api healthcheck",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "uptime": {
+                          "type": "string",
+                          "example": "ok"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "ok"
+                        },
+                        "version": {
+                          "type": "string",
+                          "example": "ok"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "timestamp"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "description": "unexpected internal error occured"
+          }
+        }
+      }
+    },
+    "/spot_price": {
+      "get": {
+        "x-eov-operation-handler": "spotPrice/route.spotPrice",
+        "operationId": "getSpotPrices",
+        "tags": [
+          "spot_price"
+        ],
+        "description": "get a test",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/query_date_from"
+          },
+          {
+            "$ref": "#/components/parameters/query_date_to"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TSpotPriceSummary"
+                    },
+                    "_paging": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailure"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "description": "unexpected internal error occured"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "query_date_from": {
+        "name": "date_from",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2024-03-01T08:09:22.146Z"
+        }
+      },
+      "query_date_to": {
+        "name": "date_to",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2024-05-29T08:09:22.146Z"
+        }
+      },
+      "pagination_index": {
+        "name": "pagination_index",
+        "in": "query",
+        "description": "which item is the first for the page?",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/PaginationIndex"
+        }
+      },
+      "pagination_limit": {
+        "name": "pagination_limit",
+        "in": "query",
+        "description": "how many per page",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/PaginationLimit"
+        }
+      }
+    },
+    "schemas": {
+      "PaginationIndex": {
+        "type": "string",
+        "default": 0
+      },
+      "PaginationLimit": {
+        "type": "string",
+        "default": 50,
+        "maximum": 50,
+        "example": 50
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "$ref": "#/components/schemas/PaginationIndex"
+          },
+          "limit": {
+            "$ref": "#/components/schemas/PaginationLimit"
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+          }
+        }
+      },
+      "ErrorList": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "example": "Service error occured"
+          }
+        }
+      },
+      "TSpotPriceMeta": {
+        "type": "object",
+        "properties": {
+          "price_unit": {
+            "type": "string",
+            "example": "c/Kwh"
+          },
+          "tax": {
+            "type": "number",
+            "example": 25
+          }
+        },
+        "required": [
+          "price_unit",
+          "tax"
+        ]
+      },
+      "TSpotPrice": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "example": "timestamp"
+          },
+          "price": {
+            "type": "string",
+            "example": "12.16"
+          },
+          "price_with_tax": {
+            "type": "string",
+            "example": "15.20"
+          }
+        },
+        "required": [
+          "timestamp",
+          "price",
+          "price_with_tax"
+        ]
+      },
+      "TSpotPriceSummary": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date-time",
+            "example": "timestamp"
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time",
+            "example": "timestamp"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/TSpotPriceMeta"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TSpotPrice"
+            }
+          }
+        },
+        "required": [
+          "meta",
+          "prices",
+          "from",
+          "to"
+        ]
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "API endpoint not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorList"
+            },
+            "example": [
+              {
+                "errors": {
+                  "error": "Calling a non existing API endpoint"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "ValidationFailure": {
+        "description": "Request failed with invalid request content",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorList"
+            },
+            "example": [
+              {
+                "errors": {
+                  "error": "item does not exist"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
