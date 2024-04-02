@@ -1,5 +1,5 @@
 
-import datefns from 'date-fns'
+import * as datefns from 'date-fns'
 
 export const removeDays = (days: number, date: Date = new Date()): Date => {
   return datefns.subDays(date, days)
