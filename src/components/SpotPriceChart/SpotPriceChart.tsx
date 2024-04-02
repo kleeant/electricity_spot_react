@@ -61,6 +61,7 @@ const SpotPriceChart: React.FC = () => {
   const priceAxis = React.useMemo(
     (): AxisOptions<TSpotPrice>[] => [
       {
+        showDatumElements: true,
         getValue: datum => Number(datum.price_with_tax),
         position: 'left',
         // invert: true,
@@ -70,7 +71,7 @@ const SpotPriceChart: React.FC = () => {
         }
       },
     ],
-    [spotPriceSummary]
+    []
   )
 
   if(error) {
@@ -90,7 +91,14 @@ const SpotPriceChart: React.FC = () => {
       </div>
       <Chart 
         options={{
-          
+          getDatumStyle: (datum) => {
+            const { highest_price_in_request_range, lowest_price_in_request_range } = spotPriceSummary.meta
+            const showDatum = [highest_price_in_request_range, lowest_price_in_request_range].includes(datum.originalDatum.price)
+            return {
+              color: showDatum ? 'red' : undefined,
+              visibility: showDatum ? 'visible' : 'hidden',
+            }
+          },
           dark: true,
           data: [{
             label: spotPriceSummary.meta.price_unit,

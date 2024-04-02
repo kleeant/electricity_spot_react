@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { TSpotPrice } from './TSpotPrice';
-import type { TSpotPriceMeta } from './TSpotPriceMeta';
+import type { TSpotPriceSummaryMeta } from './TSpotPriceSummaryMeta';
 export type TSpotPriceSummary = {
     from: string;
     to: string;
-    meta: TSpotPriceMeta;
+    meta: TSpotPriceSummaryMeta;
     prices: Array<TSpotPrice>;
 };
 

@@ -17,8 +17,8 @@ export type { PaginationLimit } from './models/PaginationLimit';
 export type { query_date_from } from './models/query_date_from';
 export type { query_date_to } from './models/query_date_to';
 export type { TSpotPrice } from './models/TSpotPrice';
-export type { TSpotPriceMeta } from './models/TSpotPriceMeta';
 export type { TSpotPriceSummary } from './models/TSpotPriceSummary';
+export type { TSpotPriceSummaryMeta } from './models/TSpotPriceSummaryMeta';
 
 export { PublicService } from './services/PublicService';
 export { SpotPriceService } from './services/SpotPriceService';
