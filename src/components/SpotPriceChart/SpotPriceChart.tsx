@@ -80,6 +80,9 @@ const SpotPriceChart: React.FC = () => {
   if(loading || !spotPriceSummary) {
     return <div>Loading...</div>;
   }
+  if(!spotPriceSummary.prices.length) {
+    return <div>No data to show</div>;
+  }
   return (
     <>
       <div className='spot-price-chart'>
