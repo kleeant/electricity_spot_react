@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { AxisOptions, Chart } from 'react-charts'
-import { CancelablePromise, Pagination, TSpotPrice, TSpotPriceSummary } from '../../openapi'
-import { SpotPriceService } from '../../openapi/services/SpotPriceService'
+import { CancelablePromise, Pagination, TSpotPrice, TSpotPriceSummary } from '../../generated/openapi'
+import { SpotPriceService } from '../../generated/openapi/services/SpotPriceService'
 import { removeDays, addDays, getStartOfDay, getEndOfDay } from '../../util/dateUtil'
 import './SpotPriceChart.css'
-
-// type Series = {
-//   label: string,
-//   data: TSpotPrice[]
-// }
-
 
 const getSpotPrices = async (): Promise<CancelablePromise<{ data?: TSpotPriceSummary | undefined, _paging?: Pagination | undefined}>> => {
   const from = getStartOfDay(removeDays(7))

@@ -1,7 +1,7 @@
 
 import './App.css'
 import SpotPriceChart from './components/SpotPriceChart/SpotPriceChart'
-import { OpenAPI } from './openapi'
+import { OpenAPI } from './generated/openapi'
 // envs are not coming trough in production and i dont have time to fix this
 OpenAPI.BASE = import.meta.env.VITE_API_BASE_ADDRESS || 'https://spot-hinta-api.azurewebsites.net/api/v1'
 
